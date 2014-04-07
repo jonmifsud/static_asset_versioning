@@ -76,8 +76,7 @@ class extension_static_asset_versioning extends Extension
             }
             $assets->appendChild($directory);
         }
-        $params = $context['xml']->getChildrenByName('params');
-        $params[0]->appendChild($assets);
+        $context['xml']->appendChild($assets);
         Symphony::Profiler()->seed($start);
         Symphony::Profiler()->sample('Asset Hashes Generated', PROFILE_LAP);
     }
