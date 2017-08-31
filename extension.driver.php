@@ -30,15 +30,17 @@ class extension_static_asset_versioning extends Extension
         //var_dump($context['xml']);
         $factory = new FolderIteratorFactory;
 
-        $watch_dirs = array(
-            'js' => WORKSPACE . '/js',
-            'css' => WORKSPACE . '/css',
-        );
+        $versionDataConfig = Symphony::Configuration()->get('version-data');
+        $paths = $versionDataConfig['paths'];
 
-        $extensions = array(
-            'css',
-            'js'
-        );
+        $watch_dirs = array();
+
+        foreach($paths as $key => $value){
+            $watch_dirs[$key] = WORKSPACE . $value;
+        }
+
+        $extensions = explode(',', $versionDataConfig['extensions']);
+
 
         $watch_dirs = array_map('realpath', $watch_dirs);
         $directories = $factory->build(
@@ -50,6 +52,7 @@ class extension_static_asset_versioning extends Extension
 
         foreach ($directories as $file) {
             $folder_name = array_search(dirname($file->getRealPath()), $watch_dirs);
+        // var_dump($folder_name);die; // js
             if (!is_string($folder_name)) {
                 throw new Exception('Please set a name for each directory I need to track');
             }
@@ -65,6 +68,8 @@ class extension_static_asset_versioning extends Extension
                 )
             );
         }
+
+        
         //die();
         $assets = new XMLElement('assets');
 
